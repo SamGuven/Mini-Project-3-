@@ -3,7 +3,7 @@ matplotlib.use('TkAgg')
 from pylab import *
 import pycxsimulator
 
-n = 50            # number of agents
+n = 30            # number of agents
 r = 0.1           # infection radius
 p_infect = 0.4    # probability of infection
 move_range = 0.01 # movement per step
@@ -30,11 +30,16 @@ def initialize():
 def observe():
     global agents
     cla()
+    ax = gca()
     susceptible = [ag for ag in agents if ag.type == 0]
     infected = [ag for ag in agents if ag.type == 1]
     grid()
     plot([ag.x for ag in susceptible], [ag.y for ag in susceptible], 'bo', label='Susceptible')
-    plot([ag.x for ag in infected], [ag.y for ag in infected], 'ro', label='Infected')
+    for ag in infected:
+        plot(ag.x, ag.y, 'ro', label = 'Infected')  # dot
+        # draw a red transparent circle for the house boundary
+        circle = Circle((ag.house_x, ag.house_y), ag.house_radius, color='red', alpha=0.2)
+        ax.add_patch(circle)
     axis('image')
     axis([0, 1, 0, 1])
     legend()
