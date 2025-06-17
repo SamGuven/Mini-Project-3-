@@ -5,9 +5,9 @@ import pycxsimulator
 
 n = 30            # number of agents
 r = 0.1           # infection radius
-p_infect = 0.8    # probability of infection
+p_infect = 0.5   # probability of infection
 move_range = 0.01 # movement per step
-p_selfIsolate = 0.8 # percent willing to self-isolate
+p_selfIsolate = 0.7 # probability of infected willing to self-isolate
 
 class agent:
     pass
@@ -58,7 +58,7 @@ def update():
             ag.x = max(0, min(1, ag.x + dx))
             ag.y = max(0, min(1, ag.y + dy))
         elif ag.type == 1 and random() < p_selfIsolate:
-            # Infected: move only inside house radius
+            # Infected that isolate: move only inside house radius
             new_x = ag.x + dx
             new_y = ag.y + dy
             dist_sq = (new_x - ag.house_x)**2 + (new_y - ag.house_y)**2
@@ -67,7 +67,7 @@ def update():
                 ag.y = new_y
             # else: stays in place (blocked by quarantine)
         else:
-            # Infected that don't self-isolate
+            # Infected that don't isolate: move outside of house radius
             ag.x = max(0, min(1, ag.x + dx))
             ag.y = max(0, min(1, ag.y + dy))
 
