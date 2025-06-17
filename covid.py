@@ -1,9 +1,9 @@
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-mu = 2.8
+mu = 3
 sigma = 0.5
-immunity = 80
+immunity = 100
 
 class Agent:
 
@@ -80,7 +80,7 @@ class Simulation:
         self.setup_agents()
         
     def setup_agents(self):
-        home_clusters = min(15, self.n_agents // 20)  
+        home_clusters = min(20, self.n_agents // 15)  
         cluster_centers = [(np.random.randint(0, self.grid_size), 
                            np.random.randint(0, self.grid_size)) 
                           for _ in range(home_clusters)]
@@ -118,6 +118,7 @@ class Simulation:
         }
         self.history.append(stats)
         self.time_step += 1  
+        print(self.history)
         
     def run(self, steps):
         for i in range(steps):
@@ -140,8 +141,8 @@ class Simulation:
         plt.grid(True)
         plt.show()
                     
-sim = Simulation(grid_size = 50, n_agents = 1200 , initial_infected = 5, 
-                 pmask = 0.8, pi = 0.05, mask_ratio = 0.5, radius = 5)
+sim = Simulation(grid_size = 50, n_agents = 1250 , initial_infected = 5, 
+                 pmask = 0.5, pi = 0.025, mask_ratio = 0.5, radius = 10)
 sim.run(600)
 #sim.plot_results()
 
@@ -240,8 +241,9 @@ def animate_simulation(sim, frame_skip=5):
         color_codes = [0 if s == 's' else 1 if s == 'i' else 2 for s in states]
         
         # Update scatter plot
-        scat = ax1.scatter(x_coords, y_coords, c=color_codes, 
-                          cmap=cmap, vmin=0, vmax=2, s=20)
+        sizes = [30 if state == 'i' else 20 for state in states] 
+        cat = ax1.scatter(x_coords, y_coords, c=color_codes, 
+                      cmap=cmap, vmin=0, vmax=2, s=sizes)
         
         # Update time series data
         time_data.append(actual_frame)
