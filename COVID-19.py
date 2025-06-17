@@ -5,8 +5,9 @@ import pycxsimulator
 
 n = 30            # number of agents
 r = 0.1           # infection radius
-p_infect = 0.4    # probability of infection
+p_infect = 0.8    # probability of infection
 move_range = 0.01 # movement per step
+p_selfIsolate = 0.8 # percent willing to self-isolate
 
 class agent:
     pass
@@ -35,8 +36,9 @@ def observe():
     infected = [ag for ag in agents if ag.type == 1]
     grid()
     plot([ag.x for ag in susceptible], [ag.y for ag in susceptible], 'bo', label='Susceptible')
+    plot([], [], 'ro', label = 'Infected')
     for ag in infected:
-        plot(ag.x, ag.y, 'ro', label = 'Infected')  # dot
+        plot(ag.x, ag.y, 'ro')  # dot
         # draw a red transparent circle for the house boundary
         circle = Circle((ag.house_x, ag.house_y), ag.house_radius, color='red', alpha=0.2)
         ax.add_patch(circle)
@@ -55,7 +57,7 @@ def update():
             # Susceptible: move freely
             ag.x = max(0, min(1, ag.x + dx))
             ag.y = max(0, min(1, ag.y + dy))
-        else:
+        elif ag.type == 1 and random() < p_selfIsolate:
             # Infected: move only inside house radius
             new_x = ag.x + dx
             new_y = ag.y + dy
@@ -64,6 +66,10 @@ def update():
                 ag.x = new_x
                 ag.y = new_y
             # else: stays in place (blocked by quarantine)
+        else:
+            # Infected that don't self-isolate
+            ag.x = max(0, min(1, ag.x + dx))
+            ag.y = max(0, min(1, ag.y + dy))
 
     # Infection spread
     for ag in agents:
